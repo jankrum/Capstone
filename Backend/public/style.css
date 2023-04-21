@@ -1,0 +1,15 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.labelInputPairDiv {
+    display: flex;
+    flex-direction: row;
+}
+
+#errorLabel {
+    color: red;
+}
