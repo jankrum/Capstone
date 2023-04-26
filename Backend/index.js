@@ -32,12 +32,12 @@ async function getUserByUsername(username) {
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
-    console.log("\t-Login request");
+    console.log("Login attempt");
 
     // Query the database to get the user's hashed password
     const user = await getUserByUsername(username);
     if (!user) {
-        console.log("\t-Username not found");  // Used for debugging
+        console.log("-Username not found");  // Used for debugging
         // The user doesn't exist - return a 401 Unauthorized response
         return res.status(401).send('Invalid username or password');
     }
@@ -45,10 +45,12 @@ app.post('/api/login', async (req, res) => {
     // Compare the user's hashed password with the entered password
     const passwordMatch = await bcrypt.compare(password, user.passwordHash);
     if (!passwordMatch) {
-        console.log("\t-Password unmatch");  // Used for debugging
+        console.log("-Password unmatch");  // Used for debugging
         // The password is incorrect - return a 401 Unauthorized response
         return res.status(401).send('Invalid username or password');
     }
+
+    console.log("-Successful login!")
 
     // Generate a session token for the user
     //const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
@@ -62,16 +64,19 @@ app.post('/api/login', async (req, res) => {
 
 // If the user is requesting a login
 app.get("/login", (req, res) => {
+    console.log("Login request");
     res.render("login");
 })
 
 // If they are not requesting any specific page
 app.get("/", (req, res) => {
+    console.log("Login request");
     res.render("login");
 })
 
 // If they are requesting the dashboard
 app.get("/dashboard", (req, res) => {
+    console.log("Dashboard request");
     res.send("dashboard");
 })
 
@@ -82,5 +87,5 @@ app.get("*", (req, res) => {
 
 // Start listening
 app.listen(3000, () => {
-    console.log("listening on port 3000")
+    console.log("Listening on port 3000")
 })
