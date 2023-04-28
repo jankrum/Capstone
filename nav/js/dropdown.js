@@ -1,5 +1,5 @@
 const red = "#E95B5B";
-const green = "#5EB090";
+const green = "#3EB489";
 const purple = "#EAB464";
 const cyan = "#3F88C5";
 // #89B6A5 gren

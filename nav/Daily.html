@@ -17,7 +17,37 @@
             <li><a href="Team.html">Team Schedule</a></li>
         </ul>
     </div>
+    <div class="flexrow">
+        <div class="box daily">
+            <label class="title">Daily Check-In</label>
+            <div class="dropbox top">
+                <select class="dropdown" onchange="callForColor('A')" id="A">
+                    <option dsiabled selected value style="display:none ;">Morning</option>
+                    <option value="1">Park</option>
+                    <option value="2">Office</option>
+                    <option value="3">On-Base</option>
+                    <option value="4">Home</option>
+                </select>
+                </select>
+            </div>
+            <div class="dropbox bottom">
+                <select class="dropdown" onchange="callForColor('B')" id="B">
+                    <option dsiabled selected value style="display:none ;">Afternoon</option>
+                    <option value="1">Park</option>
+                    <option value="2">Office</option>
+                    <option value="3">On-Base</option>
+                    <option value="4">Home</option>
+                </select>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="daily-button">Confirm</button>
+            </div>
+        </div>
+
+    </div>
 </body>
 <link rel="stylesheet" href="style/style.css">
+<script src="js/dropdown.js"></script>
 
 </html>

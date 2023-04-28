@@ -78,7 +78,7 @@ a:hover {
     background-color: rgba(255, 255, 255, 0.263) !important;
 }
 
-.week {
+.flexrow {
     display: flex;
     margin: 50px;
     flex: 1;
@@ -86,16 +86,21 @@ a:hover {
     justify-content: center;
 }
 
-.days {
+.box {
     margin: 25px;
     background-color: #393939;
-    height: 16em;
+    height: 256px;
     width: 250px;
     border-radius: 20px;
     text-align: center;
     padding-top: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.416);
     min-width: 250px;
+}
+
+.daily {
+    height: 350px;
+    width: 400px;
 }
 
 .title {
@@ -150,4 +155,22 @@ a:hover {
     padding-top: 5px;
     padding-bottom: 12px;
     max-width: 48px;
+}
+
+.daily-button {
+    background-color: #3EB489;
+    width: 100%;
+    border: 0px;
+    height: 100px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    color: white;
+    font-family: "Inter";
+    font-size: xx-large;
+}
+
+.daily-button:active {
+    background-color: #31916d;
+    color: #bababa;
+    box-shadow: inset 0px 0px 10px 0px black;
 }
