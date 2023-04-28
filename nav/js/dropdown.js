@@ -1,3 +1,5 @@
+// this be the start Church's code
+
 const red = "#E95B5B";
 const green = "#3EB489";
 const purple = "#EAB464";
@@ -23,3 +25,5 @@ function colorChange(x, y) {
         y.style.backgroundColor = cyan;
     }
 }
+
+// the end of Church's code

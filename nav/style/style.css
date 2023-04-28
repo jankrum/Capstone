@@ -174,3 +174,56 @@ a:hover {
     color: #bababa;
     box-shadow: inset 0px 0px 10px 0px black;
 }
+
+.team-container {
+    width: 100%;
+    height: auto;
+    margin-top: 48px;
+}
+
+.team-individual {
+    display: grid;
+    grid-template-columns: .5fr repeat(5, 1fr);
+    grid-template-rows: .25fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    border-bottom: 4px solid rgb(255, 255, 255);
+    max-height: 100px;
+}
+
+.divgrid {
+    text-align: center;
+    font-family: "Inter";
+    color: white;
+    font-size: larger;
+    border-left: 4px solid rgb(255, 255, 255);
+    height: 100px;
+}
+
+.leftmost {
+    border-left: 0px;
+    padding-top: auto;
+    padding-bottom: auto;
+}
+
+.topgrid {
+    max-height: 50px;
+}
+
+.morning {
+    font-size: 18px;
+    padding-top: 15px;
+    padding-bottom: 9px;
+    height: 25px;
+    background-color: #E95B5B;
+    border-bottom: 1px dashed rgb(255, 255, 255);
+}
+
+.afternoon {
+    font-size: 18px;
+    padding-bottom: 15px;
+    height: 25px;
+    padding-top: 9px;
+    border-top: 1px dashed rgb(255, 255, 255);
+    background-color: #3F88C5;
+}
