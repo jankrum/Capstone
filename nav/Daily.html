@@ -22,7 +22,7 @@
             <label class="title">Daily Check-In</label>
             <div class="dropbox top">
                 <select class="dropdown" onchange="callForColor('A')" id="A">
-                    <option dsiabled selected value style="display:none ;">Morning</option>
+                    <option style="display:none ;" value="0">Morning</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
                     <option value="3">On-Base</option>
@@ -32,7 +32,7 @@
             </div>
             <div class="dropbox bottom">
                 <select class="dropdown" onchange="callForColor('B')" id="B">
-                    <option dsiabled selected value style="display:none ;">Afternoon</option>
+                    <option style="display:none ;" value="0">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
                     <option value="3">On-Base</option>
@@ -41,7 +41,7 @@
                 </select>
             </div>
             <div>
-                <button type="submit" class="daily-button">Confirm</button>
+                <button type="submit" class="daily-button" id="confirm">Confirm</button>
             </div>
         </div>
 
@@ -49,5 +49,6 @@
 </body>
 <link rel="stylesheet" href="style/style.css">
 <script src="js/dropdown.js"></script>
+<script src="js/dailyChange.js"></script>
 
 </html>
