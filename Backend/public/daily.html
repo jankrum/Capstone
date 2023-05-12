@@ -1,0 +1,55 @@
+<!-- This is all Church's code -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="Daily.html" class="active">Daily Check-In</a></li>
+            <li><a href="Week.html">Weekly Editor</a></li>
+            <li><a href="Monthly.html">Monthly Editor</a></li>
+            <li><a href="Team.html">Team Schedule</a></li>
+        </ul>
+    </div>
+    <div class="flexrow">
+        <div class="box daily">
+            <label class="title">Daily Check-In</label>
+            <div class="dropbox top">
+                <select class="dropdown" onchange="updateColors()" id="A">
+                    <option style="display:none ;" value="0">Morning</option>
+                    <option value="1">Park</option>
+                    <option value="2">Office</option>
+                    <option value="3">On-Base</option>
+                    <option value="4">Home</option>
+                </select>
+                </select>
+            </div>
+            <div class="dropbox bottom">
+                <select class="dropdown" onchange="updateColors()" id="B">
+                    <option style="display:none ;" value="0">Afternoon</option>
+                    <option value="1">Park</option>
+                    <option value="2">Office</option>
+                    <option value="3">On-Base</option>
+                    <option value="4">Home</option>
+                </select>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="daily-button" id="confirm">Confirm</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+<link rel="stylesheet" href="style/style.css">
+<script src="js/dropdown.js"></script>
+<script src="js/dailyChange.js"></script>
+
+</html>
