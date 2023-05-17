@@ -73,9 +73,9 @@ confirmButtom.addEventListener("click", async () => {
     });
 
     if (response.ok) {
-        console.log("We made it");
+        console.log("Check-In Confirmed");
     } else {
-        console.log("Its over")
+        alert("Please enter locations for your schedule");
     }
 });
 // This is the end of Church and Ankrum's code 
