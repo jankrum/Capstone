@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Sets the retrieved daily schedule to the "data" variable
     const data = await getDailyFromServer(member);
+    console.log(data);
 
     // If data is empty, then an alert is displayed.
     if (!data) {

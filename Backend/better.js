@@ -43,18 +43,66 @@ const calendarDatabase = [
                     value: 4
                 },
                 confirmed: false
+            },
+            {
+                date: "14MAY2023",
+                morning: {
+                    name: "Office",
+                    value: 2
+                },
+                afternoon: {
+                    name: "Office",
+                    value: 2
+                },
+                confirmed: false
+            },
+            {
+                date: "15MAY2023",
+                morning: {
+                    name: "Park",
+                    value: 1
+                },
+                afternoon: {
+                    name: "On-Base",
+                    value: 3
+                },
+                confirmed: false
+            },
+            {
+                date: "16MAY2023",
+                morning: {
+                    name: "On-Base",
+                    value: 3
+                },
+                afternoon: {
+                    name: "On-Base",
+                    value: 3
+                },
+                confirmed: false
             }
         ]
     }
 ];
 
 // Collects data from the calender database for the user upon page load
-function queryDatabase(member, date) {
+function queryDatabaseDay(member, date) {
     for (const row of calendarDatabase) {
         if (row.name === member) {
             for (const dayObject of row.planner) {
                 if (dayObject.date === date) {
                     return dayObject;
+                }
+            }
+        }
+    }
+}
+
+function queryDatabaseWeek(member, date) {
+    for (const row of calendarDatabase) {
+        if (row.name === member) {
+            for (const weekObject of row.planner) {
+                if (weekObject.date === date) {
+                    return weekObject;
                 }
             }
         }
@@ -74,11 +122,26 @@ app.get("/api/daily/:member", async (req, res) => {
     // Dummy date
     const today = "13MAY2023";
     //Queries the database using the member name and today's date
-    const data = queryDatabase(member, today);
+    const data = queryDatabaseDay(member, today);
 
     //console.log(data);
     //Sends the data to the user
     res.send(JSON.stringify(data));
+})
+
+// Weekly 
+app.get("/api/week/:member", async (req, res) => {
+    const { member } = req.params;
+
+    const week = ['12MAY2023', '13MAY2023', '14MAY2023', '15MAY2023', '16MAY2023'];
+
+    var weekData = [];
+
+    for (var i = 0; i < 5; i++) {
+        weekData.push(queryDatabaseWeek(member, week[i]));
+    }
+    res.send(JSON.stringify(weekData));
+
 })
 
 // If the user opens the daily page (Not used)
@@ -89,6 +152,13 @@ app.post("/api/daily", async (req, res) => {
     res.send("ok")
 })
 
+// app.post("/api/week", async (req, res) => {
+//     console.log("A post to weekly was made")
+
+//     console.dir(req.body);
+//     res.send("ok")
+// })
+
 
 // If there was no matching webpage they searched for
 app.get("*", (req, res) => {
@@ -96,6 +166,6 @@ app.get("*", (req, res) => {
 })
 
 // Start listening
-app.listen(3000, () => {
+app.listen(8888, () => {
     console.log("Listening on port 3000")
 })
