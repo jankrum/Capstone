@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <!-- Contains the navbar. Currently Monthly and Team do not work-->
     <div class="navbar">
         <ul>
             <li><a href="Daily.html" class="active">Daily Check-In</a></li>
@@ -18,12 +19,15 @@
             <li><a href="Team.html">Team Schedule</a></li>
         </ul>
     </div>
+    <!-- This holds the code for the daily dropdown box  -->
     <div class="flexrow">
         <div class="box daily">
             <label class="title">Daily Check-In</label>
+            <!-- This contains the morning dropdown -->
             <div class="dropbox top">
                 <select class="dropdown" onchange="updateColors()" id="A">
                     <option style="display:none ;" value="0">Morning</option>
+                    <!-- This is set to display none, so it should not show up in the dropdown list -->
                     <option value="1">Park</option>
                     <option value="2">Office</option>
                     <option value="3">On-Base</option>
@@ -31,6 +35,7 @@
                 </select>
                 </select>
             </div>
+            <!-- This contains the afternoon dropdown -->
             <div class="dropbox bottom">
                 <select class="dropdown" onchange="updateColors()" id="B">
                     <option style="display:none ;" value="0">Afternoon</option>

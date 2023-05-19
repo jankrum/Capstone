@@ -9,21 +9,25 @@
 </head>
 
 <body>
+    <!-- Contains the navbar. Currently Monthly and Team do not work-->
     <div class="navbar">
         <ul>
             <li><a href="daily.html">Daily Check-In</a></li>
-            <li><a href="Week.html" class="active">Weekly Editor</a></li>
+            <li><a href="week.html" class="active">Weekly Editor</a></li>
             <li><a href="Monthly.html">Monthly Editor</a></li>
             <li><a href="Team.html">Team Schedule</a></li>
             <!-- <button class="mode dark"> <img src="img/darkmode.png" class="img"></button> -->
         </ul>
 
     </div>
+
+    <!-- Each day contains a morning and afternoon dropdown menu for the user to select -->
+    <!-- When the user selects a value, their ID and selected value are sent -->
     <div class="flexrow">
         <div class="box">
             <label class="title">Monday</label>
             <div class="dropbox top">
-                <select class="dropdown" onchange="callForColor('A')" id="A">
+                <select class="dropdown" onchange="updateStorage('A')" id="A">
                     <option disabled selected value style="display:none ;">Morning</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -33,7 +37,7 @@
                 </select>
             </div>
             <div class="dropbox bottom">
-                <select class="dropdown" onchange="callForColor('B')" id="B">
+                <select class="dropdown" onchange="updateStorage('B')" id="B">
                     <option dsiabled selected value style="display:none ;">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -46,7 +50,7 @@
         <div class="box">
             <label class="title">Tuesday</label>
             <div class="dropbox top">
-                <select class="dropdown" onchange="callForColor('C')" id="C">
+                <select class="dropdown" onchange="updateStorage('C')" id="C">
                     <option dsiabled selected value style="display:none ;">Morning</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -56,7 +60,7 @@
                 </select>
             </div>
             <div class="dropbox bottom">
-                <select class="dropdown" onchange="callForColor('D')" id="D">
+                <select class="dropdown" onchange="updateStorage('D')" id="D">
                     <option dsiabled selected value style="display:none ;">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -69,7 +73,7 @@
         <div class="box">
             <label class="title">Wednesday</label>
             <div class="dropbox top">
-                <select class="dropdown" onchange="callForColor('E')" id="E">
+                <select class="dropdown" onchange="updateStorage('E')" id="E">
                     <option dsiabled selected value style="display:none ;">Morning</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -79,7 +83,7 @@
                 </select>
             </div>
             <div class="dropbox bottom">
-                <select class="dropdown" onchange="callForColor('F')" id="F">
+                <select class="dropdown" onchange="updateStorage('F')" id="F">
                     <option dsiabled selected value style="display:none ;">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -92,7 +96,7 @@
         <div class="box">
             <label class="title">Thursday</label>
             <div class="dropbox top">
-                <select class="dropdown" onchange="callForColor('G')" id="G">
+                <select class="dropdown" onchange="updateStorage('G')" id="G">
                     <option dsiabled selected value style="display:none ;">Morning</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -102,7 +106,7 @@
                 </select>
             </div>
             <div class="dropbox bottom">
-                <select class="dropdown" onchange="callForColor('H')" id="H">
+                <select class="dropdown" onchange="updateStorage('H')" id="H">
                     <option dsiabled selected value style="display:none ;">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -115,7 +119,7 @@
         <div class="box">
             <div class="title">Friday</div>
             <div class="dropbox top">
-                <select class="dropdown" onchange="callForColor('I')" id="I">
+                <select class="dropdown" onchange="updateStorage('I')" id="I">
                     <option dsiabled selected value style="display:none ;">Morning</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -125,7 +129,7 @@
                 </select>
             </div>
             <div class="dropbox bottom">
-                <select class="dropdown" onchange="callForColor('J')" id="J">
+                <select class="dropdown" onchange="updateStorage('J')" id="J">
                     <option dsiabled selected value style="display:none ;">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
