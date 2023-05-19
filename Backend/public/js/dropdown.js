@@ -7,6 +7,13 @@ const green = "#3EB489";
 const purple = "#EAB464";
 const cyan = "#3F88C5";
 
+// Sends an update to the local storage and updates color
+function callForColor(id) {
+    var a = document.getElementById(id).value;;
+    saveScheduleToLocal(a, id);
+    updateColors();
+}
+
 // the end of Church's code
 
 // This is the start of Ankrum's refactoring of Church's code

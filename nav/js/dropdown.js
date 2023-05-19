@@ -11,6 +11,7 @@ function callForColor(id) {
     console.log(a);
     console.log(b);
     colorChange(a, b)
+    saveScheduleToLocal(a, b);
 }
 
 
