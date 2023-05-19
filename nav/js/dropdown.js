@@ -1,4 +1,4 @@
-// this be the start Church's code
+// This be the start Church's code
 
 const red = "#E95B5B";
 const green = "#3EB489";

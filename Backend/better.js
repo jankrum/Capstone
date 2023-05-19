@@ -1,4 +1,7 @@
 // This is Ankrum's code
+// Church's comments
+
+//Loads express
 const express = require('express');
 const path = require("path");
 
@@ -10,15 +13,18 @@ app.use(express.static(path.join(__dirname, "public")));
 // app.set("view engine", "ejs");
 // app.set("views", path.join(__dirname, "/views"));
 
+//Dummy data calender
 const calendarDatabase = [
     {
+        // Member name
         name: "snuffy",
         planner: [
             {
+                // Date template
                 date: "12MAY2023",
                 morning: {
-                    name: undefined,
-                    value: undefined
+                    name: undefined, // Readable name for the selected thing
+                    value: undefined // HTML Value assigned for selected thing
                 },
                 afternoon: {
                     name: undefined,
@@ -42,6 +48,7 @@ const calendarDatabase = [
     }
 ];
 
+// Collects data from the calender database for the user upon page load
 function queryDatabase(member, date) {
     for (const row of calendarDatabase) {
         if (row.name === member) {
@@ -54,24 +61,27 @@ function queryDatabase(member, date) {
     }
 }
 
+// Test page
 app.get("/test", (req, res) => {
     console.log("Daily request");
     res.send("<h1>Test!</h1>")
 })
 
+// Used to populate a user's page when they load in
 app.get("/api/daily/:member", async (req, res) => {
+    // Collects member name
     const { member } = req.params;
-
+    // Dummy date
     const today = "13MAY2023";
-
+    //Queries the database using the member name and today's date
     const data = queryDatabase(member, today);
 
     //console.log(data);
-
+    //Sends the data to the user
     res.send(JSON.stringify(data));
 })
 
-
+// If the user opens the daily page (Not used)
 app.post("/api/daily", async (req, res) => {
     console.log("A post to daily was made")
 
