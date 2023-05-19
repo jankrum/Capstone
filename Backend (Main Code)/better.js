@@ -120,7 +120,7 @@ app.get("/api/daily/:member", async (req, res) => {
     // Collects member name
     const { member } = req.params;
     // Dummy date
-    const today = "13MAY2023";
+    const today = "12MAY2023";
     //Queries the database using the member name and today's date
     const data = queryDatabaseDay(member, today);
 
@@ -166,6 +166,6 @@ app.get("*", (req, res) => {
 })
 
 // Start listening
-app.listen(8888, () => {
+app.listen(3000, () => {
     console.log("Listening on port 3000")
 })

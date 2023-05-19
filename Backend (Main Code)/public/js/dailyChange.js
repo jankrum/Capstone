@@ -86,18 +86,23 @@ confirmButtom.addEventListener("click", async () => {
 
     // const obj = { Hello: "Goodbye" }
 
-    //Posts the stringified values to the backend
-    const response = await fetch('/api/daily', {
-        method: 'POST',
-        body: JSON.stringify({ morningName, morningValue, afternoonName, afternoonValue, confirmValues }),
-        headers: { 'Content-Type': 'application/json' }
-    });
 
-    //Confirms the check-in worked for the user, otherwise a negative alert is sent
-    if (response.ok) {
-        alert("Check-In Confirmed");
+    // Checks if the user didn't enter a value for their morning or afternoon
+    if (morningValue == 0 || afternoonValue == 0) {
+        alert("Please enter a schedule for your morning or afternoon");
     } else {
-        alert("There was a problem in confirming your schedule");
+        //Posts the stringified values to the backend
+        const response = await fetch('/api/daily', {
+            method: 'POST',
+            body: JSON.stringify({ morningName, morningValue, afternoonName, afternoonValue, confirmValues }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        //Confirms the check-in worked for the user, otherwise a negative alert is sent
+        if (response.ok) {
+            alert("Check-In Confirmed");
+        } else {
+            alert("There was a problem in confirming your schedule");
+        }
     }
-});
-// This is the end of Church and Ankrum's code 
+})
+    // This is the end of Church and Ankrum's code
