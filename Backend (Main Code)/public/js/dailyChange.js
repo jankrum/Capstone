@@ -2,9 +2,15 @@
 // All comments aside from author annotation is from Church
 
 // This is the start of Church's code. Used to assign the dropdowns and buttons to a variable
-const confirmButtom = document.querySelector("#confirm");
+const confirmButtom = document.getElementById('confirm');
 var morningSelect = document.getElementById("A");
 var afternoonSelect = document.getElementById("B");
+
+const dateLog = new Date().toLocaleDateString();
+const dateDisplay = new Date().toLocaleDateString('default', { day: "numeric", month: "long", year: "numeric" });
+console.log(dateLog);
+
+const currentDate = document.getElementById('todayDate').innerHTML = dateDisplay;
 // This is the end of Church's code
 
 // This is the start of Ankrum's code. Using today's date and the member's name, a daily schedule is retrieved from the backend
@@ -94,15 +100,20 @@ confirmButtom.addEventListener("click", async () => {
         //Posts the stringified values to the backend
         const response = await fetch('/api/daily', {
             method: 'POST',
-            body: JSON.stringify({ morningName, morningValue, afternoonName, afternoonValue, confirmValues }),
+            body: JSON.stringify({ morningValue, afternoonValue, confirmValues, morningName, afternoonName }),
             headers: { 'Content-Type': 'application/json' }
         });
         //Confirms the check-in worked for the user, otherwise a negative alert is sent
         if (response.ok) {
             alert("Check-In Confirmed");
+            confirmButtom.style.backgroundColor = "#31916d";
+            confirmButtom.style.color = "#bababa"
+            confirmButtom.disabled = true;
+            confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
         } else {
             alert("There was a problem in confirming your schedule");
         }
     }
+
 })
     // This is the end of Church and Ankrum's code

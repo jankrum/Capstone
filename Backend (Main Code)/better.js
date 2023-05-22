@@ -3,6 +3,7 @@
 
 //Loads express
 const express = require('express');
+const { Callbacks } = require('jquery');
 const path = require("path");
 
 const app = express();
@@ -10,8 +11,36 @@ const app = express();
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
+
+const date = new Date().toLocaleDateString();
+
+
+console.log(date);
+
+
+
 // app.set("view engine", "ejs");
 // app.set("views", path.join(__dirname, "/views"));
+
+
+const sqlite3 = require('sqlite3').verbose();
+let sql;
+
+const db = new sqlite3.Database('/Users/john.church/Desktop/Capstone/Backend (Main Code)/test.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) return console.error(err.message);
+    else
+        console.log("Open database connection")
+});
+
+// sql = `CREATE TABLE "test" (
+// 	"Morning"	INTEGER,
+// 	"Afternoon"	INTEGER,
+// 	"Confirm"	BOOLEAN,
+//     "MorningName"    TEXT,
+//     "AfternoonName"     TEXT
+// );`;
+// db.run(sql);
+
 
 //Dummy data calender
 const calendarDatabase = [
@@ -21,7 +50,7 @@ const calendarDatabase = [
         planner: [
             {
                 // Date template
-                date: "12MAY2023",
+                date: "5/22/2023",
                 morning: {
                     name: undefined, // Readable name for the selected thing
                     value: undefined // HTML Value assigned for selected thing
@@ -33,7 +62,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "13MAY2023",
+                date: "5/23/2023",
                 morning: {
                     name: "On-Base",
                     value: 3
@@ -45,7 +74,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "14MAY2023",
+                date: "5/24/2023",
                 morning: {
                     name: "Office",
                     value: 2
@@ -57,7 +86,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "15MAY2023",
+                date: "5/25/2023",
                 morning: {
                     name: "Park",
                     value: 1
@@ -69,7 +98,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "16MAY2023",
+                date: "5/26/2023",
                 morning: {
                     name: "On-Base",
                     value: 3
@@ -120,7 +149,7 @@ app.get("/api/daily/:member", async (req, res) => {
     // Collects member name
     const { member } = req.params;
     // Dummy date
-    const today = "12MAY2023";
+    const today = date;
     //Queries the database using the member name and today's date
     const data = queryDatabaseDay(member, today);
 
@@ -133,12 +162,18 @@ app.get("/api/daily/:member", async (req, res) => {
 app.get("/api/week/:member", async (req, res) => {
     const { member } = req.params;
 
-    const week = ['12MAY2023', '13MAY2023', '14MAY2023', '15MAY2023', '16MAY2023'];
+    // const week = ['5/22/2023', '5/23/2023', '5/24/2023', '5/25/2023', '5/26/2023'];
 
     var weekData = [];
 
+    var x = 0;
+    const week = new Date(date)
+
     for (var i = 0; i < 5; i++) {
-        weekData.push(queryDatabaseWeek(member, week[i]));
+        week.setDate(week.getDate() + x)
+        weekData.push(queryDatabaseWeek(member, week.toLocaleDateString()));
+        console.log(week.toLocaleDateString())
+        x = 1;
     }
     res.send(JSON.stringify(weekData));
 
@@ -148,7 +183,28 @@ app.get("/api/week/:member", async (req, res) => {
 app.post("/api/daily", async (req, res) => {
     console.log("A post to daily was made")
 
-    console.dir(req.body);
+    var inputLine = req.body;
+    var sqlVals = [];
+
+    for (const i in inputLine) {
+        sqlVals.push(inputLine[i])
+    }
+    sqlVals.push(date)
+    console.log(sqlVals)
+
+    sql = `UPDATE test SET Morning = ?, Afternoon = ?, Confirm = ?, MorningName = ?, AfternoonName = ? WHERE Date = ?`;
+
+    db.run(sql, sqlVals, (err) => { if (err) return console.error(err.message); })
+
+
+    db.close((err) => {
+        if (err)
+            console.log(err.message);
+        else
+            console.log('Close the database connection.')
+    });
+
+    console.dir(inputLine);
     res.send("ok")
 })
 
@@ -166,6 +222,6 @@ app.get("*", (req, res) => {
 })
 
 // Start listening
-app.listen(3000, () => {
+app.listen(3030, () => {
     console.log("Listening on port 3000")
 })
