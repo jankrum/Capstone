@@ -26,7 +26,7 @@ console.log(date);
 const sqlite3 = require('sqlite3').verbose();
 let sql;
 
-const db = new sqlite3.Database('/Users/john.church/Desktop/Capstone/Backend (Main Code)/test.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('../Capstone/Backend (Main Code)/test.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.error(err.message);
     else
         console.log("Open database connection")
