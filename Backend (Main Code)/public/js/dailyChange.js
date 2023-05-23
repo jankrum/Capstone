@@ -7,7 +7,7 @@ var morningSelect = document.getElementById("A");
 var afternoonSelect = document.getElementById("B");
 
 const dateLog = new Date().toLocaleDateString();
-const dateDisplay = new Date().toLocaleDateString('default', { day: "numeric", month: "long", year: "numeric" });
+const dateDisplay = new Date().toDateString();
 console.log(dateLog);
 
 const currentDate = document.getElementById('todayDate').innerHTML = dateDisplay;
