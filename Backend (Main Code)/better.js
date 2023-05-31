@@ -113,6 +113,32 @@ const calendarDatabase = [
     }
 ];
 
+function queryDatabase(date) {
+    //Query the database
+
+    let sql = `SELECT "Morning", "Afternoon" FROM test WHERE Date = "${date}"`;
+    console.log(sql);
+
+
+    db.all(sql, (err, rows) => {
+
+        if (err) {
+            console.error(err.message);
+        } else {
+            // Process the retrieved data
+            rows.forEach(row => {
+                console.log(row);
+
+            });
+            return `SELECT "Morning", "Afternoon" FROM test WHERE Morning, Afternoon = ${rows}`;
+        }
+    });
+
+
+    // Close the database connection
+    db.close();
+}
+
 // Collects data from the calender database for the user upon page load
 function queryDatabaseDay(member, date) {
     for (const row of calendarDatabase) {
