@@ -23,14 +23,13 @@ console.log(date);
 // app.set("views", path.join(__dirname, "/views"));
 
 
-const sqlite3 = require('sqlite3').verbose();
-let sql;
+// const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
-    if (err) return console.error(err.message);
-    else
-        console.log("Open database connection")
-});
+// const db = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
+//     if (err) return console.error(err.message);
+//     else
+//         console.log("Open database connection")
+// });
 
 // sql = `CREATE TABLE "test" (
 // 	"Morning"	INTEGER,
@@ -176,11 +175,19 @@ app.get("/api/daily/:member", async (req, res) => {
     //Queries the database using the member name and today's date
     // let data = queryDatabase(member, today);
 
+    const sqlite3 = require('sqlite3').verbose();
+
+    const pull = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
+    if (err) return console.error(err.message);
+    else
+        console.log("Open database connection")
+    });
+
     let sql = `SELECT "Morning", "Afternoon", "Confirm" FROM ${member} WHERE Date = ?`;
 
     console.log(sql);
     
-    db.get(sql, today, (err, row) => {
+    pull.get(sql, today, (err, row) => {
 
         if (err) {
             console.error(err.message);
@@ -189,6 +196,13 @@ app.get("/api/daily/:member", async (req, res) => {
             res.send(JSON.stringify(row));
         }
     });
+
+    pull.close((err) => {
+        if (err)
+            console.log(err.message);
+        else
+            console.log('Close the database connection.')
+    });;
 
     // Close the database connection
     // db.close();
@@ -235,10 +249,18 @@ app.post("/api/daily", async (req, res) => {
 
     sqlVals.shift();
 
-    db.run(sql, sqlVals, (err) => { if (err) return console.error(err.message); })
+    const sqlite3 = require('sqlite3').verbose();
+
+    const confirm = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
+    if (err) return console.error(err.message);
+    else
+        console.log("Open database connection")
+    });
+
+    confirm.run(sql, sqlVals, (err) => { if (err) return console.error(err.message); })
 
 
-    db.close((err) => {
+    confirm.close((err) => {
         if (err)
             console.log(err.message);
         else
