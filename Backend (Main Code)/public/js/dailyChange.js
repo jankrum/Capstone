@@ -10,6 +10,8 @@ const dateLog = new Date().toLocaleDateString();
 const dateDisplay = new Date().toDateString();
 console.log(dateLog);
 
+const member = "snuffy";
+
 const currentDate = document.getElementById('todayDate').innerHTML = dateDisplay;
 // This is the end of Church's code
 
@@ -46,10 +48,18 @@ function populateSelects(morningValue, afternoonValue) {
     }
 }
 
+function confirmedButton(BOOLEAN) {
+    if (BOOLEAN != 0) {
+            confirmButtom.style.backgroundColor = "#31916d";
+            confirmButtom.style.color = "#bababa"
+            confirmButtom.disabled = true;
+            confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
+    }
+}
+
 // When the page is loaded, the members name is sent to the backend, and a schedule is retrieved
 // For testing purposes, the member "snuffy" is loaded
 document.addEventListener("DOMContentLoaded", async () => {
-    const member = "snuffy"
 
     // Sets the retrieved daily schedule to the "data" variable
     const data = await getDailyFromServer(member);
@@ -62,11 +72,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Retrieves todays schedule from the backend
-    const morningValue = data.morning.value;
-    const afternoonValue = data.afternoon.value;
+    const morningValue = data.Morning;
+    const afternoonValue = data.Afternoon;
+    const confirmValue = data.Confirm;
 
     // Sends the todays schedule to populate the webpage if the user had already set his schedule
     populateSelects(morningValue, afternoonValue);
+
+    confirmedButton(confirmValue);
 
     // Updates the dropdown menu colors
     updateColors();
@@ -100,16 +113,14 @@ confirmButtom.addEventListener("click", async () => {
         //Posts the stringified values to the backend
         const response = await fetch('/api/daily', {
             method: 'POST',
-            body: JSON.stringify({ morningValue, afternoonValue, confirmValues, morningName, afternoonName }),
+            body: JSON.stringify({member, morningValue, afternoonValue, confirmValues, morningName, afternoonName }),
             headers: { 'Content-Type': 'application/json' }
         });
         //Confirms the check-in worked for the user, otherwise a negative alert is sent
         if (response.ok) {
             alert("Check-In Confirmed");
-            confirmButtom.style.backgroundColor = "#31916d";
-            confirmButtom.style.color = "#bababa"
-            confirmButtom.disabled = true;
-            confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
+            confirmedButton(confirmValues);
+            
         } else {
             alert("There was a problem in confirming your schedule");
         }

@@ -26,7 +26,7 @@ console.log(date);
 const sqlite3 = require('sqlite3').verbose();
 let sql;
 
-const db = new sqlite3.Database('../Capstone/Backend (Main Code)/test.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
     if (err) return console.error(err.message);
     else
         console.log("Open database connection")
@@ -113,31 +113,28 @@ const calendarDatabase = [
     }
 ];
 
-function queryDatabase(date) {
-    //Query the database
+// function queryDatabase(member, today) {
+//     //Query the database
 
-    let sql = `SELECT "Morning", "Afternoon" FROM test WHERE Date = "${date}"`;
-    console.log(sql);
-
-
-    db.all(sql, (err, rows) => {
-
-        if (err) {
-            console.error(err.message);
-        } else {
-            // Process the retrieved data
-            rows.forEach(row => {
-                console.log(row);
-
-            });
-            return `SELECT "Morning", "Afternoon" FROM test WHERE Morning, Afternoon = ${rows}`;
-        }
-    });
+//     let sql = `SELECT "Morning", "Afternoon" FROM ${member} WHERE Date = ?`;
 
 
-    // Close the database connection
-    db.close();
-}
+//     console.log(sql);
+    
+//     db.get(sql, today, (err, row) => {
+
+//         if (err) {
+//             console.error(err.message);
+//         } else {
+//             console.log(row); 
+
+//             return row;
+//         }
+//     });
+
+//     // Close the database connection
+//     db.close();
+// }
 
 // Collects data from the calender database for the user upon page load
 function queryDatabaseDay(member, date) {
@@ -177,11 +174,27 @@ app.get("/api/daily/:member", async (req, res) => {
     // Dummy date
     const today = date;
     //Queries the database using the member name and today's date
-    const data = queryDatabaseDay(member, today);
+    // let data = queryDatabase(member, today);
+
+    let sql = `SELECT "Morning", "Afternoon", "Confirm" FROM ${member} WHERE Date = ?`;
+
+    console.log(sql);
+    
+    db.get(sql, today, (err, row) => {
+
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log(row); 
+            res.send(JSON.stringify(row));
+        }
+    });
+
+    // Close the database connection
+    // db.close();
 
     //console.log(data);
     //Sends the data to the user
-    res.send(JSON.stringify(data));
 })
 
 // Weekly 
@@ -218,7 +231,9 @@ app.post("/api/daily", async (req, res) => {
     sqlVals.push(date)
     console.log(sqlVals)
 
-    sql = `UPDATE test SET Morning = ?, Afternoon = ?, Confirm = ?, MorningName = ?, AfternoonName = ? WHERE Date = ?`;
+    sql = `UPDATE ${sqlVals[0]} SET Morning = ?, Afternoon = ?, Confirm = ?, MorningName = ?, AfternoonName = ? WHERE Date = ?`;
+
+    sqlVals.shift();
 
     db.run(sql, sqlVals, (err) => { if (err) return console.error(err.message); })
 
