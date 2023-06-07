@@ -3,7 +3,6 @@
 
 //Loads express
 const express = require('express');
-const { Callbacks } = require('jquery');
 const path = require("path");
 
 const app = express();
@@ -12,18 +11,14 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const date = new Date().toLocaleDateString();
-
-
-console.log(date);
-
+const sqlite3 = require('sqlite3').verbose();
 
 
 // app.set("view engine", "ejs");
 // app.set("views", path.join(__dirname, "/views"));
 
 
-const sqlite3 = require('sqlite3').verbose();
+
 
 // const db = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
 //     if (err) return console.error(err.message);
@@ -49,7 +44,7 @@ const calendarDatabase = [
         planner: [
             {
                 // Date template
-                date: "5/22/2023",
+                date: "6/7/2023",
                 morning: {
                     name: undefined, // Readable name for the selected thing
                     value: undefined // HTML Value assigned for selected thing
@@ -61,7 +56,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "5/23/2023",
+                date: "6/8/2023",
                 morning: {
                     name: "On-Base",
                     value: 3
@@ -73,7 +68,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "5/24/2023",
+                date: "6/9/2023",
                 morning: {
                     name: "Office",
                     value: 2
@@ -85,7 +80,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "5/25/2023",
+                date: "6/10/2023",
                 morning: {
                     name: "Park",
                     value: 1
@@ -97,7 +92,7 @@ const calendarDatabase = [
                 confirmed: false
             },
             {
-                date: "5/26/2023",
+                date: "6/11/2023",
                 morning: {
                     name: "On-Base",
                     value: 3
@@ -111,6 +106,18 @@ const calendarDatabase = [
         ]
     }
 ];
+
+function queryDatabaseWeek(member, date) {
+    for (const row of calendarDatabase) {
+        if (row.name === member) {
+            for (const weekObject of row.planner) {
+                if (weekObject.date === date) {
+                    return weekObject;
+                }
+            }
+        }
+    }
+}
 
 // function queryDatabase(member, today) {
 //     //Query the database
@@ -135,31 +142,6 @@ const calendarDatabase = [
 //     db.close();
 // }
 
-// Collects data from the calender database for the user upon page load
-function queryDatabaseDay(member, date) {
-    for (const row of calendarDatabase) {
-        if (row.name === member) {
-            for (const dayObject of row.planner) {
-                if (dayObject.date === date) {
-                    return dayObject;
-                }
-            }
-        }
-    }
-}
-
-function queryDatabaseWeek(member, date) {
-    for (const row of calendarDatabase) {
-        if (row.name === member) {
-            for (const weekObject of row.planner) {
-                if (weekObject.date === date) {
-                    return weekObject;
-                }
-            }
-        }
-    }
-}
-
 // Test page
 app.get("/test", (req, res) => {
     console.log("Daily request");
@@ -171,11 +153,9 @@ app.get("/api/daily/:member", async (req, res) => {
     // Collects member name
     const { member } = req.params;
     // Dummy date
-    const today = date;
+    const today = new Date().toLocaleDateString();
     //Queries the database using the member name and today's date
     // let data = queryDatabase(member, today);
-
-    const sqlite3 = require('sqlite3').verbose();
 
     const pull = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
     if (err) return console.error(err.message);
@@ -219,15 +199,14 @@ app.get("/api/week/:member", async (req, res) => {
 
     var weekData = [];
 
-    var x = 0;
-    const week = new Date(date)
+    const week = new Date();
 
     for (var i = 0; i < 5; i++) {
-        week.setDate(week.getDate() + x)
         weekData.push(queryDatabaseWeek(member, week.toLocaleDateString()));
         console.log(week.toLocaleDateString())
-        x = 1;
+        week.setDate(week.getDate() + 1)
     }
+
     res.send(JSON.stringify(weekData));
 
 })
@@ -248,8 +227,6 @@ app.post("/api/daily", async (req, res) => {
     sql = `UPDATE ${sqlVals[0]} SET Morning = ?, Afternoon = ?, Confirm = ?, MorningName = ?, AfternoonName = ? WHERE Date = ?`;
 
     sqlVals.shift();
-
-    const sqlite3 = require('sqlite3').verbose();
 
     const confirm = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
     if (err) return console.error(err.message);
