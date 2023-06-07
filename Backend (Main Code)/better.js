@@ -23,7 +23,7 @@ console.log(date);
 // app.set("views", path.join(__dirname, "/views"));
 
 
-// const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3').verbose();
 
 // const db = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
 //     if (err) return console.error(err.message);
