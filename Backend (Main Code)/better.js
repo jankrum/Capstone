@@ -215,13 +215,15 @@ app.get("/api/week/:member", async (req, res) => {
 app.post("/api/daily", async (req, res) => {
     console.log("A post to daily was made")
 
+    const today = new Date().toLocaleDateString();
+
     var inputLine = req.body;
     var sqlVals = [];
 
     for (const i in inputLine) {
         sqlVals.push(inputLine[i])
     }
-    sqlVals.push(date)
+    sqlVals.push(today)
     console.log(sqlVals)
 
     sql = `UPDATE ${sqlVals[0]} SET Morning = ?, Afternoon = ?, Confirm = ?, MorningName = ?, AfternoonName = ? WHERE Date = ?`;
