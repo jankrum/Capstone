@@ -3,8 +3,8 @@
 
 // This is the start of Church's code. Used to assign the dropdowns and buttons to a variable
 const confirmButtom = document.getElementById('confirm');
-var morningSelect = document.getElementById("A");
-var afternoonSelect = document.getElementById("B");
+const morningSelect = document.getElementById("A");
+const afternoonSelect = document.getElementById("B");
 
 const dateLog = new Date().toLocaleDateString();
 const dateDisplay = new Date().toDateString();
@@ -22,7 +22,6 @@ async function getDailyFromServer(member) {
     if (response.ok) { // If the response is ok, then the daily schedule is returned, otherwise, "undefined" is sent to the user.
         try {
             const data = await response.json();
-            console.log(data);
             return data;
         } catch (e) {
             return undefined;
@@ -32,28 +31,23 @@ async function getDailyFromServer(member) {
     }
 }
 
+// Start of Baker and Church
 //Populates the dropdown data with the retrieved values from a members schedule for today's date, otherwise, the blank default option is selected
 function populateSelects(morningValue, afternoonValue) {
     // Morning value collection
-    if (morningValue) {
-        morningSelect.selectedIndex = morningValue;
-    } else {
-        morningSelect.selectedIndex = 0;
-    }
+    morningSelect.selectedIndex = morningValue ? morningValue : 0;
+    
     // Afternoon value collection
-    if (afternoonValue) {
-        afternoonSelect.selectedIndex = afternoonValue;
-    } else {
-        afternoonSelect.selectedIndex = 0;
-    }
+    afternoonSelect.selectedIndex = afternoonValue ? afternoonValue : 0;
 }
+// End of Baker
 
-function confirmedButton(BOOLEAN) {
-    if (BOOLEAN != 0) {
-            confirmButtom.style.backgroundColor = "#31916d";
-            confirmButtom.style.color = "#bababa"
-            confirmButtom.disabled = true;
-            confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
+function confirmedButton(boolean) {
+    if (boolean != 0) {
+        confirmButtom.style.backgroundColor = "#31916d";
+        confirmButtom.style.color = "#bababa"
+        confirmButtom.disabled = true;
+        confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
     }
 }
 

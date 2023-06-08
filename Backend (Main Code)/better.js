@@ -1,5 +1,5 @@
-// This is Ankrum's code
-// Church's comments
+// Start of Ankrum
+// Everyone's comments
 
 //Loads express
 const express = require('express');
@@ -13,185 +13,68 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const sqlite3 = require('sqlite3').verbose();
 
-
-// app.set("view engine", "ejs");
-// app.set("views", path.join(__dirname, "/views"));
-
-
-
-
-// const db = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
-//     if (err) return console.error(err.message);
-//     else
-//         console.log("Open database connection")
-// });
-
-// sql = `CREATE TABLE "test" (
-// 	"Morning"	INTEGER,
-// 	"Afternoon"	INTEGER,
-// 	"Confirm"	BOOLEAN,
-//     "MorningName"    TEXT,
-//     "AfternoonName"     TEXT
-// );`;
-// db.run(sql);
-
-
-//Dummy data calender
-const calendarDatabase = [
-    {
-        // Member name
-        name: "snuffy",
-        planner: [
-            {
-                // Date template
-                date: "6/7/2023",
-                morning: {
-                    name: undefined, // Readable name for the selected thing
-                    value: undefined // HTML Value assigned for selected thing
-                },
-                afternoon: {
-                    name: undefined,
-                    value: undefined
-                },
-                confirmed: false
-            },
-            {
-                date: "6/8/2023",
-                morning: {
-                    name: "On-Base",
-                    value: 3
-                },
-                afternoon: {
-                    name: "Home",
-                    value: 4
-                },
-                confirmed: false
-            },
-            {
-                date: "6/9/2023",
-                morning: {
-                    name: "Office",
-                    value: 2
-                },
-                afternoon: {
-                    name: "Office",
-                    value: 2
-                },
-                confirmed: false
-            },
-            {
-                date: "6/10/2023",
-                morning: {
-                    name: "Park",
-                    value: 1
-                },
-                afternoon: {
-                    name: "On-Base",
-                    value: 3
-                },
-                confirmed: false
-            },
-            {
-                date: "6/11/2023",
-                morning: {
-                    name: "On-Base",
-                    value: 3
-                },
-                afternoon: {
-                    name: "On-Base",
-                    value: 3
-                },
-                confirmed: false
-            }
-        ]
-    }
-];
-
-function queryDatabaseWeek(member, date) {
-    for (const row of calendarDatabase) {
-        if (row.name === member) {
-            for (const weekObject of row.planner) {
-                if (weekObject.date === date) {
-                    return weekObject;
-                }
-            }
-        }
-    }
-}
-
-// function queryDatabase(member, today) {
-//     //Query the database
-
-//     let sql = `SELECT "Morning", "Afternoon" FROM ${member} WHERE Date = ?`;
-
-
-//     console.log(sql);
-    
-//     db.get(sql, today, (err, row) => {
-
-//         if (err) {
-//             console.error(err.message);
-//         } else {
-//             console.log(row); 
-
-//             return row;
-//         }
-//     });
-
-//     // Close the database connection
-//     db.close();
-// }
-
 // Test page
 app.get("/test", (req, res) => {
     console.log("Daily request");
     res.send("<h1>Test!</h1>")
 })
 
+// Daily
+app.get('/daily', function (req, res) {
+    res.sendFile(__dirname + '/public/daily.html');
+})
+
+// Week
+app.get('/week', function (req, res) {
+    res.sendFile(__dirname + '/public/week.html');
+})
+
+// Team
+app.get('/team', function (req, res) {
+    res.sendFile(__dirname + '/public/team.html');
+})
+
+// Start of Baker and Church
 // Used to populate a user's page when they load in
 app.get("/api/daily/:member", async (req, res) => {
-    // Collects member name
     const { member } = req.params;
-    // Dummy date
-    const today = new Date().toLocaleDateString();
-    //Queries the database using the member name and today's date
-    // let data = queryDatabase(member, today);
 
-    const pull = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
-    if (err) return console.error(err.message);
-    else
-        console.log("Open database connection")
+    const today = new Date().toLocaleDateString();
+
+    // Establishes a connection to the database
+    const db = new sqlite3.Database('./test.db', err => {
+        if (err) {
+            console.log("Error creating connection to database");
+            console.error(err.message);
+            res.status(500).send("Server error");
+        }
     });
 
-    let sql = `SELECT "Morning", "Afternoon", "Confirm" FROM ${member} WHERE Date = ?`;
+    const queryString = `SELECT "Morning", "Afternoon", "Confirmed" FROM ${member} WHERE Date = '${today}'`;
+    console.log(queryString);
 
-    console.log(sql);
-    
-    pull.get(sql, today, (err, row) => {
-
+    // Queries the database
+    db.get(queryString, (err, row) => {
         if (err) {
+            console.log("Error querying database");
             console.error(err.message);
+            res.status(500).send("Server error");
         } else {
-            console.log(row); 
             res.send(JSON.stringify(row));
         }
     });
 
-    pull.close((err) => {
-        if (err)
+    db.close((err) => {
+        if (err) {
+            console.log("Error closing connection to database");
             console.log(err.message);
-        else
-            console.log('Close the database connection.')
-    });;
-
-    // Close the database connection
-    // db.close();
-
-    //console.log(data);
-    //Sends the data to the user
+        }
+    });
 })
+// End of Baker
 
-// Weekly 
+// Start of Church
+// Week
 app.get("/api/week/:member", async (req, res) => {
     const { member } = req.params;
 
@@ -208,7 +91,6 @@ app.get("/api/week/:member", async (req, res) => {
     }
 
     res.send(JSON.stringify(weekData));
-
 })
 
 // If the user opens the daily page (Not used)
@@ -231,9 +113,9 @@ app.post("/api/daily", async (req, res) => {
     sqlVals.shift();
 
     const confirm = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
-    if (err) return console.error(err.message);
-    else
-        console.log("Open database connection")
+        if (err) return console.error(err.message);
+        else
+            console.log("Open database connection")
     });
 
     confirm.run(sql, sqlVals, (err) => { if (err) return console.error(err.message); })
@@ -249,14 +131,7 @@ app.post("/api/daily", async (req, res) => {
     console.dir(inputLine);
     res.send("ok")
 })
-
-// app.post("/api/week", async (req, res) => {
-//     console.log("A post to weekly was made")
-
-//     console.dir(req.body);
-//     res.send("ok")
-// })
-
+// End of Church
 
 // If there was no matching webpage they searched for
 app.get("*", (req, res) => {
