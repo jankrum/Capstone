@@ -1,18 +1,16 @@
 // Most code here is entirely written from Ankrum's hands, with his refactoring of Church's code, but contains the combined power of Ankrum and Church.
 // All comments aside from author annotation is from Church
 
-// This is the start of Church's code. Used to assign the dropdowns and buttons to a variable
-const confirmButtom = document.getElementById('confirm');
-const morningSelect = document.getElementById("A");
-const afternoonSelect = document.getElementById("B");
-
-const dateLog = new Date().toLocaleDateString();
-const dateDisplay = new Date().toDateString();
-console.log(dateLog);
-
 const member = "snuffy";
+const DATE_FORMAT = "en-US";
 
-const currentDate = document.getElementById('todayDate').innerHTML = dateDisplay;
+// This is the start of Church's code. Used to assign the dropdowns and buttons to a variable
+const confirmButtom = document.getElementById("confirmButton");
+const morningSelect = document.getElementById("morningSelect");
+const afternoonSelect = document.getElementById("afternoonSelect");
+
+const dateLabel = document.getElementById("dateLabel");
+dateLabel.innerHTML = new Date().toDateString();
 // This is the end of Church's code
 
 // This is the start of Ankrum's code. Using today's date and the member's name, a daily schedule is retrieved from the backend
@@ -31,30 +29,16 @@ async function getDailyFromServer(member) {
     }
 }
 
-// Start of Baker and Church
-//Populates the dropdown data with the retrieved values from a members schedule for today's date, otherwise, the blank default option is selected
-function populateSelects(morningValue, afternoonValue) {
-    // Morning value collection
-    morningSelect.selectedIndex = morningValue ? morningValue : 0;
-    
-    // Afternoon value collection
-    afternoonSelect.selectedIndex = afternoonValue ? afternoonValue : 0;
-}
-// End of Baker
-
-function confirmedButton(boolean) {
-    if (boolean != 0) {
-        confirmButtom.style.backgroundColor = "#31916d";
-        confirmButtom.style.color = "#bababa"
-        confirmButtom.disabled = true;
-        confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
-    }
+function lockConfirmButton() {
+    confirmButtom.disabled = true;
+    confirmButtom.style.backgroundColor = "#31916d";
+    confirmButtom.style.color = "#bababa"
+    confirmButtom.style.boxShadow = "inset 0px 0px 10px 0px black";
 }
 
 // When the page is loaded, the members name is sent to the backend, and a schedule is retrieved
 // For testing purposes, the member "snuffy" is loaded
 document.addEventListener("DOMContentLoaded", async () => {
-
     // Sets the retrieved daily schedule to the "data" variable
     const data = await getDailyFromServer(member);
     console.log(data);
@@ -66,59 +50,63 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Retrieves todays schedule from the backend
-    const morningValue = data.Morning;
-    const afternoonValue = data.Afternoon;
-    const confirmValue = data.Confirm;
+    const morningNumber = data.morning_number;
+    const afternoonNumber = data.afternoon_number;
+    const confirmed = data.confirmed;
 
-    // Sends the todays schedule to populate the webpage if the user had already set his schedule
-    populateSelects(morningValue, afternoonValue);
+    morningSelect.selectedIndex = morningNumber ? morningNumber : 0;
+    afternoonSelect.selectedIndex = afternoonNumber ? afternoonNumber : 0;
 
-    confirmedButton(confirmValue);
+    if (confirmed) {
+        lockConfirmButton();
+    }
 
     // Updates the dropdown menu colors
     updateColors();
 })
 
 // Retrieves the name and value of the dropdown selects
-function getTextAndValueFromSelectedOption(select) {
-    const text = select.options[select.selectedIndex].text;
-    const value = select.selectedIndex;
-    return [text, value];
+function getValueAndTextFromSelectedOption(selectElement) {
+    const index = selectElement.selectedIndex;
+    const name = selectElement.options[index].text;
+    return [index, name];
 }
-// This is the end of Ankrum's code
 
 // This is the start of Church and Ankrum's code
 
 // Sends confirmed values to the backend 
 confirmButtom.addEventListener("click", async () => {
     // Populates several variables with name and value info to be submitted to the back end
-    const [morningName, morningValue] = getTextAndValueFromSelectedOption(morningSelect);
-    const [afternoonName, afternoonValue] = getTextAndValueFromSelectedOption(afternoonSelect);
-    // If the confirms button is clicked, this function is called, therefore the true value is sent
-    const confirmValues = true;
+    const [morningNumber, morningName] = getValueAndTextFromSelectedOption(morningSelect);
+    const [afternoonNumber, afternoonName] = getValueAndTextFromSelectedOption(afternoonSelect);
+    const dateFormatted = new Date().toLocaleDateString(DATE_FORMAT);
 
-    // const obj = { Hello: "Goodbye" }
-
+    const payload = {
+        "morning_number": morningNumber,
+        "afternoon_number": afternoonNumber,
+        "confirmed": true,
+        "morning_name": morningName,
+        "afternoon_name": afternoonName,
+        "date": dateFormatted
+    };
 
     // Checks if the user didn't enter a value for their morning or afternoon
-    if (morningValue == 0 || afternoonValue == 0) {
+    if (morningNumber === 0 || afternoonNumber === 0) {
         alert("Please enter a schedule for your morning or afternoon");
     } else {
         //Posts the stringified values to the backend
-        const response = await fetch('/api/daily', {
+        const response = await fetch(`/api/daily/${member}`, {
             method: 'POST',
-            body: JSON.stringify({member, morningValue, afternoonValue, confirmValues, morningName, afternoonName }),
+            body: JSON.stringify(payload),
             headers: { 'Content-Type': 'application/json' }
         });
         //Confirms the check-in worked for the user, otherwise a negative alert is sent
         if (response.ok) {
             alert("Check-In Confirmed");
-            confirmedButton(confirmValues);
-            
+            lockConfirmButton();
         } else {
             alert("There was a problem in confirming your schedule");
         }
     }
-
 })
     // This is the end of Church and Ankrum's code

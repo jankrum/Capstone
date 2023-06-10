@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <!-- Contains the navbar. Currently Monthly and Team do not work--> 
+    <!-- Contains the navbar. Currently Monthly and Team do not work-->
     <!-- Baker and Church code -->
     <div class="navbar">
         <ul>
@@ -20,14 +20,14 @@
             <li><a href="team">Team Schedule</a></li>
         </ul>
     </div>
-     <!-- end of Baker -->
+    <!-- end of Baker -->
     <!-- This holds the code for the daily dropdown box  -->
     <div class="flexrow">
         <div class="box daily">
-            <label class="title" id="todayDate">Daily Check-In</label>
+            <label class="title" id="dateLabel">Daily Check-In</label>
             <!-- This contains the morning dropdown -->
             <div class="dropbox top">
-                <select class="dropdown" onchange="updateColors()" id="A">
+                <select class="dropdown" onchange="updateColors()" id="morningSelect">
                     <option style="display:none ;" value="0">Morning</option>
                     <!-- This is set to display none, so it should not show up in the dropdown list -->
                     <option value="1">Park</option>
@@ -39,7 +39,7 @@
             </div>
             <!-- This contains the afternoon dropdown -->
             <div class="dropbox bottom">
-                <select class="dropdown" onchange="updateColors()" id="B">
+                <select class="dropdown" onchange="updateColors()" id="afternoonSelect">
                     <option style="display:none ;" value="0">Afternoon</option>
                     <option value="1">Park</option>
                     <option value="2">Office</option>
@@ -49,7 +49,7 @@
                 </select>
             </div>
             <div>
-                <button type="submit" class="daily-button" id="confirm">Confirm</button>
+                <button type="submit" class="daily-button" id="confirmButton">Confirm</button>
             </div>
         </div>
 

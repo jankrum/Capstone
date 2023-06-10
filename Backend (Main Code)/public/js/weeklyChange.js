@@ -1,5 +1,7 @@
 // This is Church's and Baker's code
 
+const member = "snuffy";
+
 // These variables hold the element ID's for each day
 const monday = ['A', 'B'];
 const tuesday = ['C', 'D'];
@@ -11,14 +13,13 @@ const friday = ['I', 'J'];
 const week = [monday, tuesday, wednesday, thursday, friday];
 
 // Collects the weekly schedule from the server
-async function getWeeklyFromServer(member) {
+async function getWeekFromServer(member) {
     const response = await fetch(`/api/week/${member}`);
 
     if (response.ok) { // If the response is ok, then the daily schedule is returned, otherwise, "undefined" is sent to the user.
         try {
             const data = await response.json();
-            console.log(data);
-            return data;
+            return data.week;
         } catch (e) {
             return undefined;
         }
@@ -29,55 +30,25 @@ async function getWeeklyFromServer(member) {
 
 // On document load, each day is populated with the stored data
 document.addEventListener("DOMContentLoaded", async () => {
-    const member = "snuffy"
-
     // Sets the retrieved daily schedule to the "data" variable
-    var data = await getWeeklyFromServer(member);
-    // console.log(data)
+    const data = await getWeekFromServer(member);
+    console.log(data)
 
-    // Runs a loop to populate each day with the current data
-    for (const i in data) {
-        var afternoonValue = data[i].afternoon.value;
-        // console.log(afternoonValue);
-        var morningValue = data[i].morning.value;
-        // console.log(morningValue);
+    if (data) {
+        for (let i = 0; i < 5; i += 1) {
+            const { morning_number, afternoon_number } = data[i];
 
-        // Element is stored in a value
-        var getMorning = document.getElementById(week[i][0]);
-        var getAfternoon = document.getElementById(week[i][1]);
-
-        // Saves the initial load to local storage
-        localStorage.setItem(week[i][0], morningValue);
-        localStorage.setItem(week[i][1], afternoonValue);
-
-        // If the value is the morning value, the morning dropdown is updated
-        if (morningValue) {
-            getMorning.selectedIndex = morningValue;
-        } else {
-            getMorning.selectedIndex = 0;
-        }
-        //If the value is an afternoon value, the afternoon dropdown is updated
-        if (afternoonValue) {
-            getAfternoon.selectedIndex = afternoonValue;
-        } else {
-            getAfternoon.selectedIndex = 0;
+            document.getElementById(week[i][0]).selectedIndex = morning_number;
+            document.getElementById(week[i][1]).selectedIndex = afternoon_number;
         }
 
-        // console.log(getMorning);
-        // console.log(getAfternoon);
         updateColors();
-    }
-
-
-
-    // If data is empty, then an alert is displayed.
-    if (!data) {
+    } else {
         alert("Date or member does not exist");
-        return;
     }
 })
 
 //Saves changes to the local storage
-function saveScheduleToLocal(value, id) {
-    localStorage.setItem(id, value);
-}
+// function saveScheduleToLocal(value, id) {
+//     localStorage.setItem(id, value);
+// }
