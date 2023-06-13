@@ -53,10 +53,61 @@ function getDaily(req, res) {
         });
 }
 
+function updateDatabase(name, data) {
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database(__dirname + DATABASE_NAME);
+
+        const morningNumber = data.morning_number;
+        const afternoonNumber = data.afternoon_number;
+        const morningName = data.morning_name;
+        const afternoonName = data.afternoon_name;
+        const date = new Date().toLocaleDateString(DATE_FORMAT);
+
+        if (!morningNumber || !afternoonNumber || !morningName || !afternoonName) {
+            console.error(data);
+            reject("Missing number or name in data ^");
+        }
+
+        const query = `UPDATE ${name} SET morning_number = ?, afternoon_number = ?, confirmed = 1, morning_name = ?, afternoon_name = ? WHERE date = ?;`;
+
+        db.run(query, [morningNumber, afternoonNumber, morningName, afternoonName, date], function (err) {
+            if (err) {
+                db.close((closeErr) => {
+                    if (closeErr) {
+                        console.error('Error closing database:', closeErr);
+                    }
+                    reject(err);
+                });
+            } else {
+                const numRowsUpdated = this.changes;
+                console.log(`Updated ${numRowsUpdated} row(s) for name '${name}' and date '${date}'.`);
+
+                db.close((closeErr) => {
+                    if (closeErr) {
+                        console.error('Error closing database:', closeErr);
+                    }
+                    resolve();
+                });
+            }
+        });
+    });
+}
+
+
 function postDaily(req, res) {
-    console.log("Post to daily from " + req.member);
-    console.log(req.body);
-    res.sendStatus(200);
+    const { member } = req.params;
+    const data = req.body;
+
+    updateDatabase(member, data)
+        .then(() => {
+            console.log('Confirmation successful.');
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            console.error('Error updating confirmation:', err);
+            res.sendStatus(500);
+        });
+
 }
 
 // Returns a list of strings that are the days of the current work week

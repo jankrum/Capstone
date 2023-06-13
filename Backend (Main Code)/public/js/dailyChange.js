@@ -1,7 +1,7 @@
 // Most code here is entirely written from Ankrum's hands, with his refactoring of Church's code, but contains the combined power of Ankrum and Church.
 // All comments aside from author annotation is from Church
 
-const member = "snuffy";
+const MEMBER = "snuffy";
 const DATE_FORMAT = "en-US";
 
 // This is the start of Church's code. Used to assign the dropdowns and buttons to a variable
@@ -13,9 +13,9 @@ const dateLabel = document.getElementById("dateLabel");
 dateLabel.innerHTML = new Date().toDateString();
 // This is the end of Church's code
 
-// This is the start of Ankrum's code. Using today's date and the member's name, a daily schedule is retrieved from the backend
-async function getDailyFromServer(member) {
-    const response = await fetch(`/api/daily/${member}`);
+// This is the start of Ankrum's code. Using today's date and the id, a daily schedule is retrieved from the backend
+async function getDailyFromServer(id) {
+    const response = await fetch(`/api/daily/${id}`);
 
     if (response.ok) { // If the response is ok, then the daily schedule is returned, otherwise, "undefined" is sent to the user.
         try {
@@ -40,7 +40,7 @@ function lockConfirmButton() {
 // For testing purposes, the member "snuffy" is loaded
 document.addEventListener("DOMContentLoaded", async () => {
     // Sets the retrieved daily schedule to the "data" variable
-    const data = await getDailyFromServer(member);
+    const data = await getDailyFromServer(MEMBER);
     console.log(data);
 
     // If data is empty, then an alert is displayed.
@@ -79,34 +79,33 @@ confirmButtom.addEventListener("click", async () => {
     // Populates several variables with name and value info to be submitted to the back end
     const [morningNumber, morningName] = getValueAndTextFromSelectedOption(morningSelect);
     const [afternoonNumber, afternoonName] = getValueAndTextFromSelectedOption(afternoonSelect);
-    const dateFormatted = new Date().toLocaleDateString(DATE_FORMAT);
+
+    if (morningNumber === 0 || afternoonNumber === 0) {
+        alert("Please enter a schedule for your morning or afternoon");
+        return;
+    }
 
     const payload = {
         "morning_number": morningNumber,
         "afternoon_number": afternoonNumber,
         "confirmed": true,
         "morning_name": morningName,
-        "afternoon_name": afternoonName,
-        "date": dateFormatted
+        "afternoon_name": afternoonName
     };
 
     // Checks if the user didn't enter a value for their morning or afternoon
-    if (morningNumber === 0 || afternoonNumber === 0) {
-        alert("Please enter a schedule for your morning or afternoon");
+    //Posts the stringified values to the backend
+    const response = await fetch(`/api/daily/${MEMBER}`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+    });
+    //Confirms the check-in worked for the user, otherwise a negative alert is sent
+    if (response.ok) {
+        alert("Check-In Confirmed");
+        lockConfirmButton();
     } else {
-        //Posts the stringified values to the backend
-        const response = await fetch(`/api/daily/${member}`, {
-            method: 'POST',
-            body: JSON.stringify(payload),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        //Confirms the check-in worked for the user, otherwise a negative alert is sent
-        if (response.ok) {
-            alert("Check-In Confirmed");
-            lockConfirmButton();
-        } else {
-            alert("There was a problem in confirming your schedule");
-        }
+        alert("There was a problem in confirming your schedule");
     }
 })
-    // This is the end of Church and Ankrum's code
+// This is the end of Church and Ankrum's code
