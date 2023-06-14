@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 })
 
 // Retrieves the name and value of the dropdown selects
-function getValueAndTextFromSelectedOption(selectElement) {
+function getNumberAndNameFromSelect(selectElement) {
     const index = selectElement.selectedIndex;
     const name = selectElement.options[index].text;
     return [index, name];
@@ -77,8 +77,8 @@ function getValueAndTextFromSelectedOption(selectElement) {
 // Sends confirmed values to the backend 
 confirmButtom.addEventListener("click", async () => {
     // Populates several variables with name and value info to be submitted to the back end
-    const [morningNumber, morningName] = getValueAndTextFromSelectedOption(morningSelect);
-    const [afternoonNumber, afternoonName] = getValueAndTextFromSelectedOption(afternoonSelect);
+    const [morningNumber, morningName] = getNumberAndNameFromSelect(morningSelect);
+    const [afternoonNumber, afternoonName] = getNumberAndNameFromSelect(afternoonSelect);
 
     if (morningNumber === 0 || afternoonNumber === 0) {
         alert("Please enter a schedule for your morning or afternoon");

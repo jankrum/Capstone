@@ -10,7 +10,7 @@ const cyan = "#3F88C5";
 // Sends an update to the local storage and updates color
 function updateStorage(id) {
     var a = document.getElementById(id).value;;
-    saveScheduleToLocal(a, id);
+    // saveScheduleToLocal(a, id);
     updateColors();
 }
 

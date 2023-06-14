@@ -1,5 +1,7 @@
 const loginForm = document.querySelector('#login-form');
 
+console.log("Im here")
+
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 

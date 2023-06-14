@@ -1,21 +1,7 @@
-// sql = `CREATE TABLE "22May2023" (
-// 	"Morning"	INTEGER,
-// 	"Afternoon"	INTEGER,
-// 	"Confirm"	BOOLEAN,
-//     "MorningName"    TEXT,
-//     "AfternoonName"     TEXT
-// );`;
-// db.run(sql);
-
-// Returns a list of strings that are the days of the current work week
 const DATABASE_NAME = "/test.db";
 const DATE_FORMAT = "en-US";
 
 const sqlite3 = require('sqlite3').verbose();
-
-function getTodayString() {
-    return new Date().toLocaleDateString(DATE_FORMAT);
-}
 
 // Returns every week day of the current year as a list of strings
 function getWorkDaysOfYear() {
@@ -26,6 +12,7 @@ function getWorkDaysOfYear() {
 
     const workDays = [];
 
+    // Returns the incremented date
     function incrementDate(date) {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
     }
@@ -46,57 +33,19 @@ function getWorkDaysOfYear() {
     return workDays;
 }
 
+// Given an id, potentially creates a table for the given id and populates it with rows for every weekday 
 function createTableAndInsertRows(id) {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database(__dirname + DATABASE_NAME);
 
-        // Check if table already exists
-        db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name=?;`, [id], (err, row) => {
-            if (err) {
-                db.close((closeErr) => {
-                    if (closeErr) {
-                        console.error('Error closing database:', closeErr);
-                    }
-                    reject(err);
-                });
-            } else if (row) {
-                // Table exists, no need to create it
-                console.log(`Table '${id}' already exists.`);
-                insertRows();
-            } else {
-                // Table does not exist, create it
-                const sql = `CREATE TABLE ${id} (
-          morning_number INTEGER,
-          afternoon_number INTEGER,
-          confirmed BOOLEAN,
-          morning_name TEXT,
-          afternoon_name TEXT,
-          date TEXT
-        );`;
-
-                db.run(sql, (createErr) => {
-                    if (createErr) {
-                        db.close((closeErr) => {
-                            if (closeErr) {
-                                console.error('Error closing database:', closeErr);
-                            }
-                            reject(createErr);
-                        });
-                    } else {
-                        console.log(`Table '${id}' created.`);
-                        insertRows();
-                    }
-                });
-            }
-        });
-
+        // Inserts all of the weekdays of current year into the table we found/created
         function insertRows() {
+            const insertQuery = `INSERT INTO ${id} (morning_number, afternoon_number, confirmed, morning_name, afternoon_name, date) VALUES (?, ?, ?, ?, ?, ?);`;
+            const insertStatement = db.prepare(insertQuery);
+
             const dates = getWorkDaysOfYear();
 
-            const insertSql = `INSERT INTO ${id} (morning_number, afternoon_number, confirmed, morning_name, afternoon_name, date) VALUES (?, ?, ?, ?, ?, ?);`;
-            const insertStatement = db.prepare(insertSql);
-
-            // Iterate over array and insert rows
+            // For every weekday of the year, add it to the database
             dates.forEach((date) => {
                 insertStatement.run(0, 0, false, '', '', date);
             });
@@ -114,51 +63,63 @@ function createTableAndInsertRows(id) {
                 });
             });
         }
+
+        // Check if table already exists
+        db.get("SELECT name FROM sqlite_master WHERE type='table' AND name=?;", [id], (err, row) => {
+            if (err) {
+                db.close((closeErr) => {
+                    if (closeErr) {
+                        console.error('Error closing database:', closeErr);
+                    }
+                    reject(err);
+                });
+            } else if (row) {
+                // Table exists, no need to create it
+                console.log(`Table '${id}' already exists.`);
+                insertRows();
+            } else {
+                // Table does not exist, create it
+                const createTableQuery = `CREATE TABLE ${id} (
+          morning_number INTEGER,
+          afternoon_number INTEGER,
+          confirmed BOOLEAN,
+          morning_name TEXT,
+          afternoon_name TEXT,
+          date TEXT
+        );`;
+                console.log(`Table '${id}' does not exist-- currently making it.`);
+
+                db.run(createTableQuery, (createErr) => {
+                    if (createErr) {
+                        db.close((closeErr) => {
+                            if (closeErr) {
+                                console.error('Error closing database:', closeErr);
+                            }
+                            reject(createErr);
+                        });
+                    } else {
+                        console.log(`Table '${id}' created.`);
+                        insertRows();
+                    }
+                });
+            }
+        });
     });
 }
 
-function createMember(member) {
+const member = process.argv[2];
+
+if (member) {
+    // If there is an argument for member, create/populate a table for the member
     createTableAndInsertRows(member)
         .then(() => {
-            const year = getTodayString().slice(-4);
-            console.log(`Successfully created a table for '${member}' for the year of ${year}!`)
+            const year = new Date().getFullYear();
+            console.log(`Successfully populated table '${member}' for the year of ${year}!`);
         })
         .catch((err) => {
             console.error(`Error creating table or inserting rows for '${member}':`, err);
         });
-
+} else {
+    // If no member was given, tell the user
+    console.error("Missing member argument");
 }
-
-function fillWeek(db, member) {
-    const date = getTodayString();
-    console.log(`Filling the week of '${date}' for '${member}'`);
-    console.log("Week populated!!!");
-}
-
-function main(args) {
-    const [command, member] = args;
-
-    if (!command) {
-        console.log("Missing a command");
-        return;
-    }
-
-    if (!member) {
-        console.log("Missing a member");
-        return;
-    }
-
-    switch (command.toLowerCase()) {
-        case "create_member":
-            createMember(member);
-            break;
-        case "fill_week":
-            fillWeek(member);
-            break;
-        default:
-            console.log(`COMMAND '${command}' not known`);
-    }
-}
-
-const arguments = process.argv.slice(2);
-main(arguments);

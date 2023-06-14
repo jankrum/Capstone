@@ -1,6 +1,4 @@
 // Ankrum's code and comments
-
-
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -62,13 +60,13 @@ app.post('/api/login', async (req, res) => {
 // If the user is requesting a login
 app.get("/login", (req, res) => {
     console.log("Login request");
-    res.render("login");
+    res.sendFile(__dirname + '/public/login.html');
 })
 
 // If they are not requesting any specific page
 app.get("/", (req, res) => {
     console.log("Login request");
-    res.render("login");
+    res.sendFile(__dirname + '/public/login.html');
 })
 
 // If they are requesting the dashboard
@@ -79,7 +77,7 @@ app.get("/dashboard", (req, res) => {
 
 // If there was no matching webpage they searched for
 app.get("*", (req, res) => {
-    res.render("notFound", { badUrl: req.originalUrl });
+    res.send("404 error ");
 })
 
 // Start listening
