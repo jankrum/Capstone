@@ -53,7 +53,8 @@ function getDaily(req, res) {
         });
 }
 
-function updateDatabase(name, data) {
+// Given data it confirms to the database
+function updateTodayInDatabase(name, data) {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database(__dirname + DATABASE_NAME);
 
@@ -93,12 +94,12 @@ function updateDatabase(name, data) {
     });
 }
 
-
+// Updates todays value in databse and confrims
 function postDaily(req, res) {
     const { member } = req.params;
     const data = req.body;
 
-    updateDatabase(member, data)
+    updateTodayInDatabase(member, data)
         .then(() => {
             console.log('Confirmation successful.');
             res.sendStatus(200);
@@ -107,7 +108,6 @@ function postDaily(req, res) {
             console.error('Error updating confirmation:', err);
             res.sendStatus(500);
         });
-
 }
 
 // Returns a list of strings that are the days of the current work week
@@ -125,14 +125,14 @@ function getWorkDaysOfWeek() {
     })
 }
 
-// Given a member and a list of dates, returns a 
+// Given a member and a list of dates, returns the morning and afternoon numbers for those dates
 function queryRows(member, dates) {
     return new Promise((resolve, reject) => {
         // Connect to the database
         const db = new sqlite3.Database(__dirname + DATABASE_NAME);
 
         // Prepare the SQL query
-        const queryString = `SELECT "morning_number", "afternoon_number" FROM ${member} WHERE date IN (${dates.map(() => '?').join(', ')})`;
+        const queryString = `SELECT "morning_number", "afternoon_number", "date" FROM ${member} WHERE date IN (${dates.map(() => '?').join(', ')})`;
 
         // Execute the query with the provided dates
         db.all(queryString, dates, (err, rows) => {
@@ -169,7 +169,7 @@ function getWeek(req, res) {
 
     queryRows(member, daysOfWeek)
         .then(jsonString => {
-            console.log(jsonString);
+            // console.log(jsonString);
             res.send(jsonString);
         })
         .catch(err => {
@@ -178,49 +178,55 @@ function getWeek(req, res) {
         });
 }
 
-function postWeek(req, res) {
-    console.log("Post to week!");
-    res.sendStatus(200);
+// Queries database and updates morning or afternoon values in database
+function updateSpecificDayInDatabase(member, data) {
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database(__dirname + DATABASE_NAME);
+
+        const { date, half, number, name } = data;
+        const halfNumber = `${half}_number`;
+        const halfName = `${half}_name`;
+
+        const query = `UPDATE ${member} SET '${halfNumber}' = ${number}, '${halfName}' = '${name}' WHERE date = '${date}';`;
+        console.log(query);
+
+        db.run(query, function (err) {
+            if (err) {
+                db.close((closeErr) => {
+                    if (closeErr) {
+                        console.error('Error closing database:', closeErr);
+                    }
+                    reject(err);
+                });
+            } else {
+                const numRowsUpdated = this.changes;
+                console.log(`Updated ${numRowsUpdated} row(s) for name '${member}' and date '${date}'.`);
+
+                db.close((closeErr) => {
+                    if (closeErr) {
+                        console.error('Error closing database:', closeErr);
+                    }
+                    resolve();
+                });
+            }
+        });
+    });
 }
 
-// // If the user opens the daily page (Not used)
-// app.post("/api/daily", async (req, res) => {
-//     console.log("A post to daily was made")
+// Posts the value from the weekly changes to the database
+function postWeek(req, res) {
+    const { member } = req.params;
+    const data = req.body;
 
-//     const today = new Date().toLocaleDateString();
-
-//     var inputLine = req.body;
-//     var sqlVals = [];
-
-//     for (const i in inputLine) {
-//         sqlVals.push(inputLine[i])
-//     }
-//     sqlVals.push(today)
-//     console.log(sqlVals)
-
-//     sql = `UPDATE ${ sqlVals[0] } SET Morning = ?, Afternoon = ?, Confirm = ?, MorningName = ?, AfternoonName = ? WHERE Date = ? `;
-
-//     sqlVals.shift();
-
-//     const confirm = new sqlite3.Database('./Backend (Main Code)/test.db', (err) => {
-//         if (err) return console.error(err.message);
-//         else
-//             console.log("Open database connection")
-//     });
-
-//     confirm.run(sql, sqlVals, (err) => { if (err) return console.error(err.message); })
-
-
-//     confirm.close((err) => {
-//         if (err)
-//             console.log(err.message);
-//         else
-//             console.log('Close the database connection.')
-//     });
-
-//     console.dir(inputLine);
-//     res.send("ok")
-// })
-// End of Church
+    updateSpecificDayInDatabase(member, data)
+        .then(() => {
+            console.log('Week change successful.');
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            console.error('Error changing weekday:', err);
+            res.sendStatus(500);
+        });
+}
 
 module.exports = { getDaily, postDaily, getWeek, postWeek };
